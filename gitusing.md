@@ -1,3 +1,9 @@
+## git一个新的项目，初始化和上传 ##
+1. git init
+2. git add .
+3. git remote add origin https://github.com/pengzij/mygitbote.git
+4. git push -u origin main  //这两行是github中新建的repositor
+
 ## git使用的相关快捷键 ##
 1. git checkout -- test.cpp //还原该文件到上次提交
 2. git reset HEAD test.cpp //将该文件从暂存区中取
