@@ -5,10 +5,19 @@
 4. git branch -M main//确认你的分支是main/ master
 5. git push -u origin main  //上传到main/ master这个分支中
 
-## 对已有项目修改，继续提交master分支 ##
+## 对已有项目修改和提交 ##
 1. git push origin master//把修改后的上传到master/main，注意如果master还是空的，执行该修改语句则会报错
+2. git push origin v1.0//上传当前项目，同时加上版本号
 
-## git使用的相关快捷键 ##
+## 创建分支 ##
+1. git branch main//创建main分支
+2. git branch//显示所有分支，和当前你所在的分支
+3. git checkout main//切换到main分支
+4. git branch -d main//删除main分支
+5. git checkout -b main//创建main分支并且跳转到main分支
+6. git checkout -D main//强制删除
+
+## git ##
 1. git checkout -- test.cpp //还原该文件到上次提交
 2. git reset HEAD test.cpp //将该文件从暂存区中取
 3. git rm test.cpp //删除文件
@@ -16,3 +25,7 @@
 5. git reset --hard HEAD^ //整个项目回滚版本，回到上n个commit的版本(HEAD后面的^可以有n个)
 6. git reset --hard 8e1b577da4353e618ed358f46ed5ba567f8b04b9//整个项目回退版本到输入log中对应版本的编号，可以只输入前7位
 7. git checkout 8e1b577da4353e618ed358f46ed5ba567f8b04b9 -- version.cpp//只把选择version.cpp文件回退到该log对应版本
+8. git tag v1.0//对上一次的修改加上tag
+9. git tag//显示当前的tag
+10. git tag v0.5 8e1b577da4353e618ed35 //对某一次的修改加上tag
+11. git tag -d v0.5//删除v0.5的tag
