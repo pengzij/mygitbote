@@ -2,10 +2,11 @@
 1. git init
 2. git add .
 3. git remote add origin https://github.com/pengzij/mygitbote.git
-4. git push -u origin main  //这两行是github中新建的repositor
+4. git branch -M main//确认你的分支是main/ master
+5. git push -u origin main  //上传到main/ master这个分支中
 
 ## 对已有项目修改，继续提交master分支 ##
-1. git push origin master//把修改后的上传到master
+1. git push origin master//把修改后的上传到master/main，注意如果master还是空的，执行该修改语句则会报错
 
 ## git使用的相关快捷键 ##
 1. git checkout -- test.cpp //还原该文件到上次提交
