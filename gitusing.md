@@ -9,13 +9,15 @@
 1. git push origin master//把修改后的上传到master/main，注意如果master还是空的，执行该修改语句则会报错
 2. git push origin v1.0//上传当前项目，同时加上版本号
 
-## 创建分支 ##
+## 分支相关 ##
 1. git branch main//创建main分支
 2. git branch//显示所有分支，和当前你所在的分支
 3. git checkout main//切换到main分支
 4. git branch -d main//删除main分支
 5. git checkout -b main//创建main分支并且跳转到main分支
 6. git checkout -D main//强制删除
+7. git merge main//把main分支和当前所在分支合并，原本main的分支不受影响
+8. 
 
 ## git ##
 1. git checkout -- test.cpp //还原该文件到上次提交
