@@ -17,7 +17,9 @@
 5. git checkout -b main//创建main分支并且跳转到main分支
 6. git checkout -D main//强制删除
 7. git merge main//把main分支和当前所在分支合并，原本main的分支不受影响
-8. 1111
+8. git merge --abort//如果合并分支时，出现冲突如下图，该语句为保留current change,忽略其他分支。
+[![cbSDoV.png](https://z3.ax1x.com/2021/04/21/cbSDoV.png)](https://imgtu.com/i/cbSDoV)
+9. 或者可以手动对这段代码进行修改，然后 git add .  //  git commit //然后终端会跳转
 
 ## git ##
 1. git checkout -- test.cpp //还原该文件到上次提交
