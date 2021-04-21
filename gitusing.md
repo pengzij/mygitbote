@@ -21,6 +21,7 @@
 [![cbSDoV.png](https://z3.ax1x.com/2021/04/21/cbSDoV.png)](https://imgtu.com/i/cbSDoV)
 9. 或者可以手动对这段代码进行修改，然后 git add .  //  git commit //然后终端会跳转
 
+
 ## git ##
 1. git checkout -- test.cpp //还原该文件到上次提交
 2. git reset HEAD test.cpp //将该文件从暂存区中取
