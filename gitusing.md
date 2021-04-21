@@ -35,11 +35,20 @@
 9. git tag//显示当前的tag
 10. git tag v0.5 8e1b577da4353e618ed35 //对某一次的修改加上tag
 11. git tag -d v0.5//删除v0.5的tag
+12. git log --oneline//简略显示log
+13. git log --graph//图表显示
+14. git log --oneline --graph//简略图表显示
 
 ## 多人分支集成操作 ##
-1. git log --oneline//简略显示log
-2. git log --graph//图表显示
-3. git log --oneline --graph//简略图表显示
-4. git fetch// 将远程主机的最新内容拉取到本地，用户检查后决定是否合并到本地。git pull 是直接拉取并合并
-5. git branch -av//查看所有分支信息，包括本地和远程的
-6. git push origin --delete test//删除远程github上的test分支
+不同的人对项目修改：
+1. git clone https://github.com/pengzij/mygitbote.git // 在github上项目的code按钮上获取对应的地址
+2. git config --add --local user.name 'pzj' //配置本地项目的第二个人
+3. git config --add --local user.email 'pzj@qq.com' //配置对应的邮箱
+4. git config --local --list //可以查看是否配置成功
+5. git branch -av //查看所有的分支
+6. git checkout -b main remotes/origin/main //
+
+1. git fetch// 将远程主机的最新内容拉取到本地，用户检查后决定是否合并到本地。git pull 是直接拉取并合并
+2. git branch -av//查看所有分支信息，包括本地和远程的, 绿色的是本地的分支，红色的是远端的分支
+3. git push origin --delete test//删除远程github上的test分支
+ 
