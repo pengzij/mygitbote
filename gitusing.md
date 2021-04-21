@@ -19,7 +19,8 @@
 7. git merge main//把main分支和当前所在分支合并，原本main的分支不受影响
 8. git merge --abort//如果合并分支时，出现冲突如下图，该语句为保留current change,忽略其他分支。
 [![cbSDoV.png](https://z3.ax1x.com/2021/04/21/cbSDoV.png)](https://imgtu.com/i/cbSDoV)
-9. 或者可以手动对这段代码进行修改，然后 git add .  //  git commit //然后终端会跳转
+9. 或者可以手动对这段代码进行修改，然后 git add .  //  git commit //然后终端会跳转到编辑文本vim界面，在空行处编辑这次修改的注释即可，i进入插入模式, esc命令模式，修改完成后命令模式下输入:wq,保存写入并退出即可.
+10. git 
 
 
 ## git ##
@@ -34,3 +35,11 @@
 9. git tag//显示当前的tag
 10. git tag v0.5 8e1b577da4353e618ed35 //对某一次的修改加上tag
 11. git tag -d v0.5//删除v0.5的tag
+
+## 多人分支集成操作 ##
+1. git log --oneline//简略显示log
+2. git log --graph//图表显示
+3. git log --oneline --graph//简略图表显示
+4. git fetch// 将远程主机的最新内容拉取到本地，用户检查后决定是否合并到本地。git pull 是直接拉取并合并
+5. git branch -av//查看所有分支信息，包括本地和远程的
+6. git push origin --delete test//删除远程github上的test分支
