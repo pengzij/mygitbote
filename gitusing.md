@@ -17,7 +17,7 @@
 5. git checkout -b main//创建main分支并且跳转到main分支
 6. git checkout -D main//强制删除
 7. git merge main//把main分支和当前所在分支合并，原本main的分支不受影响
-8. 
+8. 11111111
 
 ## git ##
 1. git checkout -- test.cpp //还原该文件到上次提交
