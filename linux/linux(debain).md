@@ -12,4 +12,3 @@ linux指令
 * 切换账户： su username
 * 进入root账户： sudo su
 
-
