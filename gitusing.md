@@ -20,7 +20,6 @@
 8. git merge --abort//如果合并分支时，出现冲突如下图，该语句为保留current change,忽略其他分支。
 [![cbSDoV.png](https://z3.ax1x.com/2021/04/21/cbSDoV.png)](https://imgtu.com/i/cbSDoV)
 9. 或者可以手动对这段代码进行修改，然后 git add .  //  git commit //然后终端会跳转到编辑文本vim界面，在空行处编辑这次修改的注释即可，i进入插入模式, esc命令模式，修改完成后命令模式下输入:wq,保存写入并退出即可.
-10. git 
 
 
 ## git ##
