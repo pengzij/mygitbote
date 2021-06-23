@@ -85,14 +85,87 @@ bash按照一下顺序读取环境设置：
 1. 读入环境配置`source ~/.bashrc`或者 `. ~/.bashrc` (树莓派中是root用户应该修改 etc/bash.bashrc)
 ## 终端机的环境设置
 1. stty -a , 查看终端机的所有设置和快捷键
-* intr : 送出一个   interrupt (中断) 的讯号给目前正在    run 的程序   (就是终止啰！)；
-* quit : 送出一个   quit 的讯号给目前正在    run 的程序；
-* erase : 向后删除字符，
-* kill : 删除在目前指令列上的所有文字；
-* eof  : End of file 的意思，代表『结束输入』。
-* start : 在某个程序停止后，重新启动他的    output
-* stop : 停止目前屏幕的输出；
-* susp : 送出一个   terminal stop 的讯号给正在   run 的程序。
+* intr (^c): 送出一个   interrupt (中断) 的讯号给目前正在    run 的程序   (就是终止啰！)；
+* quit (^\): 送出一个   quit 的讯号给目前正在    run 的程序；
+* erase (^h): 向后删除字符，
+* kill (^u): 删除在目前指令列上的所有文字；
+* eof  (^d): End of file 的意思，代表『结束输入』。
+* start (^q): 在某个程序停止后，重新启动他的    output
+* stop (^s): 停止目前屏幕的输出；
+* susp (^z): 送出一个terminal stop 的讯号给正在 run 的程序。
+
+## 通配符
+[![RkXRE9.png](https://z3.ax1x.com/2021/06/21/RkXRE9.png)](https://imgtu.com/i/RkXRE9)
+
+## bash环境中的特殊符号
+[![Rkxn74.png](https://z3.ax1x.com/2021/06/21/Rkxn74.png)](https://imgtu.com/i/Rkxn74)
+
+## 数据流重导向
+1. 标准输入： < 或 <<
+2. 标准输出：> (覆盖)或 >>(累加)
+3. 标准错误输出：2> (覆盖)或 2>>(累加)
+* 例子： 
+1. `find /home/ -name .bashrc > stdout/stdout.txt` # 标准输出到stdout.txt
+2. `find /home/ -name .bashrc > stdout/stdout.txt 2> stdout/stdout_err.txt`  # 标准输出和标准错误输出到不同文件 
+3. `find /home/ -name .bashrc &> stdout/stdout.txt` # 将标准输出和标准错误输出按照正确的顺序输入到同一个文件  
+* cat 输入 
+pi@raspberrypi Mon Jun 21 14:55:~/stdout $ cat > catfile   
+testing  
+cat file test  
+^d  # EOF
+* 标准输入的功能： 用其他文件的内容代替键盘输入  
+例： `cat > catfile < ~/helloworld/helloworld.c` 功能与cp一样
+
+## 命令执行的判断依据： ;, &&, ||
+1. xx ; xx # 不考虑指令相关性的连续指令下达
+2. > 根据回传值判断是否执行   
+   > cmd1 && cmd2 ,如果cmd1执行完毕且正确（$? = 0）则执行cmd2，反之不执行cmd2  
+   > cmd1 || cmd2  ,如果cmd1执行完毕且正确($? = 0)则不执行cmd2，反之执行cmd1
+3. && 和 || 联合使用
+    > 无论是否存在该文件夹都执行命令touch /tmp/abc/abcd  
+    > ls /temp/abc || mkdir /temp/abc && touch /tmp/abc/abcd   
+    > 分析(1)若 /tmp/abc  不存在故回传 $?≠0，则 (2)因为 ||  遇到非为 0  的 $?  故开始 mkdir /tmp/abc，由于 mkdir /tmp/abc  会成功进行，所以回传 $?=0 (3)因为 &&  遇到 $?=0  故会执行 touch /tmp/abc/hehe，最终 hehe  就 被建立了;        
+    > (1)若/tmp/abc存在故回传$?=0，则    (2)因为    ||  遇到    0  的   $?  不会进行，此时$?=0  继续向后传，故 (3) 因为    &&  遇到   $?=0  就开始建立   /tmp/abc/hehe了！最终/tmp/abc/hehe 被建立起来。  
+## 管线命令 |
+1. ll /etc | less # 将ls /etc指令的标准输出由less处理，|只能处理标准输出，不能处理标准错误输出（直接忽略）。
+2. less hello.txt #文本查看，比more更加灵活
+3. less , more , head, tail 等都是可以接受标准输入的管线命令。
+## 撷取命令 cut，grep
+1. 针对信息一行一行的截取出特定位置的信息
+2. cut -d'分割字符' -f firlds # 分割出有特定分割字符
+3. cut -c 字符区间  # 分割排列整齐的讯息
+4. 例子： 
+> pi@raspberrypi Mon Jun 21 16:33:~ $ echo $PATH
+> /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin   
+> pi@raspberrypi Mon Jun 21 17:03:~ $ echo $PATH | cut -d ':' -f 4   
+> /usr/bin   
+> pi@raspberrypi Mon Jun 21 17:05:~ $ echo $PATH | cut -d ':' -f 2,4  
+> /usr/local/bin:/usr/bin   
+5. 例子
+> pi@raspberrypi Mon Jun 21 17:07:~ $ export  
+declare -x DISPLAY="localhost:10.0"   
+declare -x GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"   
+> pi@raspberrypi Mon Jun 21 17:14:~ $ export | cut -c 12-   
+DISPLAY="localhost:10.0"   
+GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"   
+#可以控制显示每一行的那几个字符，例子中是从第二个开始显示
+* grep 对信息内容分析，选出符合要求的
+1. grep [-a] [--color=auto] '搜索字符串’ filename
+2. last | grep 'pi' #把last的输出中有pi的哪一行选出来
+3. last | grep -v 'pi' #把last的输出中没有pi的哪一行选出来
+4. pi@raspberrypi Mon Jun 21 17:28:~ $ last | grep 'reboot' | cut -d ' ' -f 7-  
+5.10.17-v7l+     Thu Jan  1 08:00   still running   
+5.10.17-v7l+     Thu Jan  1 08:00 - 09:26 (18796+01:26)  
+5.10.17-v7l+     Thu Jan  1 08:00 - 09:19 (18796+01:19)   
+5.  grep --color=auto 'MANPATH' /etc/manpath.config   
+MANPATH_MAP     /bin                    /usr/share/man   
+MANPATH_MAP     /usr/bin                /usr/share/man   
+MANPATH_MAP     /sbin                   /usr/share/man  #颜色复制不过来。。。  
+
+## 垃圾桶：
+1. /dev/null 
+
+
 ## 热键：
 1. tab
 具有命令补全和文件补全功能   
