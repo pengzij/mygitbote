@@ -82,7 +82,7 @@ bash按照一下顺序读取环境设置：
 [![Rkc7nS.png](https://z3.ax1x.com/2021/06/21/Rkc7nS.png)](https://imgtu.com/i/Rkc7nS)
 最终读取的文件的~/.bashrc ，因此可以将自己的偏好设置写入该文件即可
 
-1. 读入环境配置`source ~/.bashrc`或者 `. ~/.bashrc` (树莓派中是root用户应该修改 etc/bash.bashrc)
+1. 读入环境配置`source ~/.bashrc`或者 `. ~/.bashrc` (树莓派中是root用户应该修改 etc/bash.bashrc, 但是后来发现读取的 . ~/.bashrc)
 ## 终端机的环境设置
 1. stty -a , 查看终端机的所有设置和快捷键
 * intr (^c): 送出一个   interrupt (中断) 的讯号给目前正在    run 的程序   (就是终止啰！)；
@@ -161,9 +161,43 @@ GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
 MANPATH_MAP     /bin                    /usr/share/man   
 MANPATH_MAP     /usr/bin                /usr/share/man   
 MANPATH_MAP     /sbin                   /usr/share/man  #颜色复制不过来。。。  
-
+* 排序 sort， wc， uniq
+* 双向重导向 tee   
+1. tee 会将数据流分送到文件和stdout
 ## 垃圾桶：
 1. /dev/null 
+
+## 分区命令： split
+1. 帮你将 一个大文件，依据文件大小或行数来分区，就可以将大文件分区成为小文件了
+2. split [-bl] file PREFIX 选项与参数：  
+-b  ：后面可接欲分区成的文件大小，可加单位，例如    b, k, m 等； -l  ：以行数来进行分区。
+PREFIX ：代表前导符的意思，可作为分区文件的前导文字。
+3. 将多个文件合成一个 cat services* >> servicesback
+## 减号的用途 - 
+管线命令在bash的连续处理程序中，常常需要使用前一个指令的stdout作为这次的stdin，如果指令的参数需要文件名则可以用 `-` 带替代
+
+# 正规表示法
+1. 用于从大量的系统数据中找出需要的信息
+## grep的使用
+2. grep -n 't[ea]st' file #在文件中搜索test或者tast，[ea]代表其中一个字母符合要求就ok
+3. grep -n '[^g]oo' regular_express.txt  #文件中搜索`oo`，但是`oo`的前面不能是g
+4. grep -n '[^a-z]oo' regular_express.txt #文件中搜索`oo`，但是前面不能是小写字母
+5. grep -n '[^[:lower:]]oo' regular_express.txt #效果同上
+6. grep -n '^the'  regular_express.txt #开头是the
+7. grep -n '^[a-z]'  regular_express.txt #开头是小写字母
+8. grep -n '^[^a-zA-Z]'  regular_express.txt # 开头不是大写字母 
+* 表示一定有一个任意字符 ： `.`  ,   表示重复前一个字符，0到无穷多次: `*`
+* grep -n 'g..d' regular_express.txt #搜索gxxd
+* grep -n 'ooo*' regular_express.txt #搜索至少有两个o的字符串
+----
+## sed的使用
+1. cat -n /etc/passwd | sed '2,5d' # 把内容列出，同时删除2-5行
+2. cat -n /etc/passwd | sed '2,$d' # 删除2 - 最后一行
+3. cat -n /etc/passwd | sed '2a drink tea' # 第二行后面加上drink tea
+4. cat -n /etc/passwd | sed '2i drink tea' #  第二行前加上drink tea
+5.  cat -n /etc/passwd | sed '2a drink tea or ... `\`  
+    `>` drink beer ? ' # 使用\实现换行，然后继续输入下一行内容
+6. sed -i # 可以直接修改文件内容
 
 
 ## 热键：
@@ -177,15 +211,119 @@ MANPATH_MAP     /sbin                   /usr/share/man  #颜色复制不过来�
 ## --help求助说明 指令用法的大致说明 
 * 协助查询指令的大致选项和参数含义
 ## man page (manual page)
-* help的解释很简单 但是如果完全不清楚指令的用法或者查找的不是指令而是文件的格式，则需要man page  
+* help的解释很简单 但是如果完全不清楚指令的用法或者查找的不是指令而是文件的格式，则需要man page,  但是man page的解释也相对简单，如果需要详细的了解还是需要info page  
 * 例如 man date  #就会显示date的详细用法
 * man 查询指令后数字表示特殊意义，常用的：1 ： 用户在shell环境中可以操作的指令或可执行文件   5 ： 配置文件或者某些文件格式 8 ： 系统管理员可用的管理指令
 * 离开： q
 * 不记得完整的指令查询：man -k date 
-## info page(文本模式的网页显示数据)
+## info page(文本模式的网页显示数据，指令的详细说明文档)
 * info date 
+* info ls
 ## documents (软件或指令的说明文档)
 * 路径：user/share/doc
+-----
+# 进程管理
+* 有时关闭线程后，又会再次出现，而且pid发生变化，如果不是crontab工程排程就是有父进程存在，需要找出父进程删除。
+* 进程呼叫  
+[![RQtuhd.png](https://z3.ax1x.com/2021/06/24/RQtuhd.png)](https://imgtu.com/i/RQtuhd)
+# 工作管理(job control)
+1. cp file1 file2 & # & 将任务放置在后台进行，完成后会显示完成信息
+2. 需要和用户互动的工作不能放在后台，而且后台工作不可以用crtl + c 终止
+## 将当前的工作放入后台中[暂停]： ctrl + z
+1. 例如正在使用vim，突然忘记文件的目录，需要对目录搜索。可以将vim放入后台暂停。
+2. 例如bash列出大量信息，且一直滚屏，可以按下暂停。
+## 查看当前后台的工作状态： jobs [-lrs]
+1. -l  ：除了列出 job number 与指令串之外，同时列出PID 的号码；  
+2. -r  ：仅列出正在后台    run 的工作;  
+3. -s  ：仅列出正在后台当中暂停    (stop) 的工作。
+## 将后台工作拿到前台： fg
+1. fg %jobnumber #如果不输入jobnumber 则去除预设的+的工作
+2. fg - #去除-号的工作
+## 控制工作在后台变成运行中： bg (background)
+1. bg %jobnumber # 将后台中暂停的job变成运行中
+
+## 管理后台中得工作： kill
+1. kill -signal %jobnumber
+选项与参数：
+* -signal ：代表给予后面接的那个工作什么样的指示啰！用    man 7 signal 可知：
+* -1 ：重新读取一次参数的配置文件    (类似    reload)；
+* -2 ：代表与由键盘输入    [ctrl]-c 同样的动作；
+* -9 ：立刻强制删除一个工作；
+* -15：以正常的进程方式终止一项工作。与 -9 是不一样的。
+
+## 脱机管理问题
+* 以上在后台工作得后台是与终端机有关，因此当工作未结束时远程联机脱机，工作会中断。
+* 如果希望脱机后工作依旧运行，可以使用`at`处理，将工作放置倒系统背景。也可以用nohup可以让工作在脱机或者注销系统后继续进行。
+
+## 进程观察
+1. ps aux #观察系统所有的进程数据
+2. ps -lA #观察所有系统的数据
+3. ps axjf #连同部分进程树状态  
+5. ps -l #只查阅自己bash进程
+选项与参数：
+* -A  ：所有的    process 均显示出来，与    -e 具有同样的效用； 
+* -a  ：不与    terminal 有关的所有    process ；
+* -u  ：有效使用者 (effective user) 相关的 process ；
+*  x   ：通常与 a 这个参数一起使用，可列出较完整信息。 输出格式规划：
+* l   ：较长、较详细的将该    PID 的的信息列出；
+* j   ：工作的格式    (jobs format)
+* -f  ：做一个更为完整的输出。
+## 动态观察进程的变化 top
+1. top [-d 数字] | top [-bnp]
+选项与参数：
+* -d  ：后面可以接秒数，就是整个进程画面更新的秒数。预设是 5 秒
+* -b  ：以批次的方式执行    top ，还有更多的参数可以使用喔！ 通常会搭配数据流重导向来将批次的结果输出成为文件。
+* -n  ：与    -b 搭配，意义是，需要进行几次    top 的输出结果。
+* -p  ：指定某些个    PID 来进行观察监测而已。
+在    top 执行过程当中可以使用的按键指令：
+* ? ：显示在    top 当中可以输入的按键指令； 
+* P ：以    CPU 的使用资源排序显示；
+* M ：以    Memory 的使用资源排序显示；
+* N ：以    PID 来排序喔！
+* T ：由该    Process 使用的    CPU 时间累积    (TIME+) 排序。
+* k ：给予某个    PID 一个讯号        (signal)
+* r ：给予某个    PID 重新制订一个    nice 值。
+* q ：离开    top 软件的按键。
+
+## 进程管理
+透过给予该进程一个讯号 (signal)  去告知该进程你想要让它做什么， 可通过 kill -l 和 man 7 signal查询 常见的：
+[![RJUWA1.png](https://z3.ax1x.com/2021/06/27/RJUWA1.png)](https://imgtu.com/i/RJUWA1)
+1. kill -signal PID
+
+##  优先执行序 (priority, PRI) 
+1. PRI约小代表越优先，用户无法直接调整。
+2. 如果需要调整 则需要通过Nice（NI）值
+3. PRI(new) = PRI(old) + nice
+## 调整进程nice的方法（需要root账号）
+1. 一开始执行程序就立即给予一个特定的   nice  值：用   nice  指令；
+2. 调整某个已经存在的   PID  的   nice  值：用   renice  指令。
+## 系统资源的观察
+1. free [-b|-k|-m|-g|-h] [-t] [-s N -c N]
+选项与参数：
+* -b  ：直接输入    free 时，显示的单位是    Kbytes，我们可以使用    b(bytes), m(Mbytes) k(Kbytes), 及    g(Gbytes) 来显示单位喔！也可以直接让系统自己指定单位    (-h)
+* -t  ：在输出的最终结果，显示物理内存与    swap 的总量。
+* -s  ：可以让系统每几秒钟输出一次，不间断的一直输出的意思！对于系统观察挺有效！ 
+* -c  ：与    -s 同时处理～让    free 列出几次的意思～
+## 系统和核心信息
+1. uanme [-asrmpi]
+选项与参数：
+* -a  ：所有系统相关的信息，包括底下的数据都会被列出来； 
+* -s  ：系统核心名称
+* -r  ：核心的版本
+* -m  ：本系统的硬件名称，例如    i686 或   x86_64 等；
+* -p  ：CPU 的类型，与    -m 类似，只是显示的是    CPU 的类型！ 
+* -i  ：硬件的平台    (ix86)
+## uptime：观察系统启动时间与工作负载
+1. 就是显示top最上的一行
+## netstat  ：追踪网络或插槽文件
+1. netstat -[atunlp]
+选项与参数：
+* -a  ：将目前系统上所有的联机、监听、Socket 数据都列出来 
+* -t  ：列出    tcp 网络封包的数据
+* -u  ：列出    udp 网络封包的数据
+* -n  ：不以进程的服务名称，以埠号    (port number) 来显示； 
+* -l  ：列出目前正在网络监听    (listen) 的服务；
+* -p  ：列出该网络服务的进程    PID
 ---
 gcc
 * 编译多个文件 并产生目标文件（不产生链接）： gcc -c hello.c hello_1.c  
